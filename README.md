@@ -5,7 +5,7 @@ Reporte de Sales Flash (Bodegas + Descuentos, Costa Rica) - comparativo Julio vs
 ## Contenido
 - KPIs de Venta Julio/Agosto, Plan Total y % Logro
 - Filtros: Periodo (por dia), Formato, Gerente Senior, Tienda, Cumple Plan Extendido
-- Grafica de tendencia diaria (Julio, Agosto, Plan, y tiendas que ganan el Plan Extendido)
+- Grafica de tendencia diaria (linea Julio, linea Agosto, barra de Plan Actual del dia)
 - Tabla de Cumplimiento por Gerente Senior
 - Tabla de Cumplimiento por Tienda
 - Tabla de Detalle diario (31 dias de Julio, Agosto hasta el dia de corte)
