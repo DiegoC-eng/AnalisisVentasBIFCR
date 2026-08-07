@@ -101,8 +101,7 @@
   <!-- Tabla detalle -->
   <section class="bg-white rounded-lg shadow p-5 overflow-x-auto">
     <h2 class="text-lg font-bold text-black mb-1" id="tituloTabla">Detalle diario</h2>
-    <p class="text-xs text-gray-500 mb-3" id="notaTablaDiaria"></p>
-    <table class="min-w-full text-xs">
+        <table class="min-w-full text-xs">
       <thead class="wm-biformato text-white" id="theadDiaria">
         <tr>
           <th class="px-2 py-1.5 text-left cursor-pointer select-none hover:bg-green-800" data-key="diaIdx">Dia<span class="sort-arrow"></span></th>
@@ -421,7 +420,6 @@ function renderNotas(gruposGerente) {
   const notaExt = ` Plan Extendido = US$${PLAN_EXTRA_DIARIO_TEXTO} por tienda por dia (compromiso de venta incremental prometido para Agosto), x${ventana} dia(s) en esta vista. % Logro Extendido = Diferencia US$ (Agosto - Julio) / Plan Extendido US$.`;
   const notaCompleta = notaVentana + ' ' + notaPlan + notaExt;
   document.getElementById('notaFootnote').textContent = notaCompleta;
-  document.getElementById('notaTablaDiaria').textContent = 'Se muestran los 31 dias de Julio (venta real); Agosto/Diferencia/Plan Actual/%Logro solo estan disponibles hasta el dia de corte actual (dia ' + DIAS_AGO_DISPONIBLES + ') y muestran "-" en los dias restantes. Plan Actual US$ (dia) = Plan OFICIAL de Agosto distribuido segun el peso de venta de Julio de cada dia. Plan Extendido US$ (dia) = US$' + PLAN_EXTRA_DIARIO_TEXTO + ' x tienda del filtro actual (monto fijo, no depende de Julio). % Logro Extendido = Diferencia US$ / Plan Extendido US$.';
 }
 
 function actualizar() {
@@ -479,11 +477,19 @@ function actualizar() {
       ? planTotal
       : (julVentanaTotalParaPeso ? planTotal * (j / julVentanaTotalParaPeso) : planTotal / DIAS_AGO_DISPONIBLES);
   });
-  // Cantidad de tiendas (del filtro actual) que ganan el Plan Extendido ESE dia especifico:
-  // Diferencia de esa tienda ese dia (Agosto - Julio) >= US$50 (el compromiso diario por tienda).
-  const tiendasGananExtDiario = Array.from({length: 31}, (_, i) => {
+  // Cantidad de tiendas (del filtro actual) EN LOGRO de su Plan Actual ESE dia especifico: venta de
+  // Agosto de esa tienda ese dia >= Plan Actual de esa tienda ese dia (mismo prorrateo por peso de
+  // Julio que usa planDiario a nivel portafolio, pero calculado tienda por tienda).
+  const tiendasEnLogroDiario = Array.from({length: 31}, (_, i) => {
     if (i >= DIAS_AGO_DISPONIBLES) return null;
-    return filas.filter(r => (r.ago[i] - (r.jul[i] || 0)) >= PLAN_EXTRA_DIARIO).length;
+    return filas.filter(r => {
+      const esProxy = r.planAgostoMensual === null || r.planAgostoMensual === undefined;
+      const julTotalTienda = r.jul.slice(0, DIAS_AGO_DISPONIBLES).reduce((a,v) => a + (v || 0), 0);
+      const planDiaTienda = esProxy
+        ? (r.jul[i] || 0)
+        : (julTotalTienda ? r.planAgostoMensual * ((r.jul[i] || 0) / julTotalTienda) : r.planAgostoMensual / DIAS_AGO_DISPONIBLES);
+      return (r.ago[i] || 0) >= planDiaTienda;
+    }).length;
   });
 
   const agoData = agoConNulls(ago);
@@ -495,8 +501,7 @@ function actualizar() {
       datasets: [
         { label: 'Julio', data: jul, borderColor: wmBlue, backgroundColor: wmBlue, tension: 0.25, spanGaps: false, yAxisID: 'y' },
         { label: 'Agosto (' + DIAS_AGO_DISPONIBLES + ' dias disponibles)', data: agoData, borderColor: wmYellow, backgroundColor: wmYellow, tension: 0.25, spanGaps: false, borderWidth: 3, yAxisID: 'y' },
-        { label: 'Plan', data: planDiario, borderColor: '#9ca3af', backgroundColor: '#9ca3af', borderDash: [6, 4], borderWidth: 2, pointRadius: 2, tension: 0, spanGaps: false, yAxisID: 'y' },
-        { type: 'bar', label: 'Tiendas que ganan Plan Extendido', data: tiendasGananExtDiario, backgroundColor: '#bbf7d0', borderColor: '#86efac', borderWidth: 1, yAxisID: 'y1', order: 2 },
+        { type: 'bar', label: 'Tiendas en logro', data: tiendasEnLogroDiario, backgroundColor: '#bbf7d0', borderColor: '#86efac', borderWidth: 1, yAxisID: 'y1', order: 2 },
       ]
     },
     options: {
