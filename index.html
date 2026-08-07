@@ -489,7 +489,7 @@ function actualizar() {
         { label: 'Julio', data: jul, borderColor: wmBlue, backgroundColor: wmBlue, tension: 0.25, spanGaps: false, yAxisID: 'y', datalabels: { display: false } },
         { label: 'Agosto (' + DIAS_AGO_DISPONIBLES + ' dias disponibles)', data: agoData, borderColor: wmYellow, backgroundColor: wmYellow, tension: 0.25, spanGaps: false, borderWidth: 3, yAxisID: 'y', datalabels: { display: false } },
         { type: 'bar', label: 'Plan Actual', data: planDiario, backgroundColor: '#cbd5e1', borderColor: '#94a3b8', borderWidth: 1, yAxisID: 'y', order: 2, barPercentage: 0.5, categoryPercentage: 0.6,
-          datalabels: { display: (ctx) => ctx.dataset.data[ctx.dataIndex] !== null, anchor: 'end', align: 'top', color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => v === null ? '' : fmt(v) } },
+          datalabels: { display: false } },
       ]
     },
     options: {
