@@ -110,7 +110,7 @@
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="a">Agosto US$<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="diff">Diferencia US$<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="planActualDia">Plan Actual US$<span class="sort-arrow"></span></th>
-          <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="pctPlan">% Logro<span class="sort-arrow"></span></th>
+          <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="pctPlan">Cumple Plan<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="planExt">Plan Extendido US$<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="pctExt">% Logro Extendido<span class="sort-arrow"></span></th>
         </tr>
@@ -134,7 +134,6 @@
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="pctPlan">% Logro Plan<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="cumplenPlan">Tiendas Cumplen Plan<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="planExt">Plan Extendido US$<br><span class="font-normal text-xs">(+$50/tienda/dia)</span><span class="sort-arrow"></span></th>
-          <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="pctExt">% Logro Extendido<span class="sort-arrow"></span></th>
         </tr>
       </thead>
       <tbody id="tablaGerente"></tbody>
@@ -153,7 +152,7 @@
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="ventaAgosto">Venta Agosto US$<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="diferencia">Diferencia US$<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="planActual">Plan Actual Agosto US$<span class="sort-arrow"></span></th>
-          <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="pct">% Logro Plan<span class="sort-arrow"></span></th>
+          <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="pct">Cumple Plan<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="planExt">Plan Extendido US$<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="pctExt">% Logro Extendido<span class="sort-arrow"></span></th>
         </tr>
@@ -201,6 +200,11 @@ const logroClase = pct => {
   if (pct >= 100) return 'text-green-600 font-semibold';
   if (pct >= 95) return 'text-amber-600 font-semibold';
   return 'text-red-600 font-semibold';
+};
+const cumpleTexto = pct => pct === null || pct === undefined ? '-' : (pct >= 100 ? 'Cumple' : 'No Cumple');
+const cumpleClase = pct => {
+  if (pct === null || pct === undefined) return 'text-gray-400';
+  return pct >= 100 ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold';
 };
 const ventanaActual = () => diaSeleccionado === null ? DIAS_AGO_DISPONIBLES : 1;
 
@@ -376,8 +380,7 @@ function renderTablaGerente(filas) {
         <td class="px-2 py-1 text-right ${logroClase(g.pctPlan)}">${fmtPctPlain(g.pctPlan)}</td>
         <td class="px-2 py-1 text-right">${g.cumplenPlan} de ${g.tiendas}</td>
         <td class="px-2 py-1 text-right">${fmt(g.planExt)}</td>
-        <td class="px-2 py-1 text-right ${logroClase(g.pctExt)}">${fmtPctPlain(g.pctExt)}</td>
-      </tr>`).join('') || '<tr><td colspan="10" class="px-2 py-4 text-center text-gray-400">Sin datos para este filtro</td></tr>';
+      </tr>`).join('') || '<tr><td colspan="9" class="px-2 py-4 text-center text-gray-400">Sin datos para este filtro</td></tr>';
   return lista;
 }
 
@@ -404,7 +407,7 @@ function renderTablaTienda(filas) {
         <td class="px-2 py-1 text-right">${fmt(t.ventaAgosto)}</td>
         <td class="px-2 py-1 text-right ${t.diferencia>=0?'text-green-600':'text-red-600'}">${fmt(t.diferencia)}</td>
         <td class="px-2 py-1 text-right">${fmt(t.planActual)}</td>
-        <td class="px-2 py-1 text-right ${logroClase(t.pct)}">${fmtPctPlain(t.pct)}</td>
+        <td class="px-2 py-1 text-right ${cumpleClase(t.pct)}">${cumpleTexto(t.pct)}</td>
         <td class="px-2 py-1 text-right">${fmt(t.planExt)}</td>
         <td class="px-2 py-1 text-right ${logroClase(t.pctExt)}">${fmtPctPlain(t.pctExt)}</td>
       </tr>`).join('') || '<tr><td colspan="9" class="px-2 py-4 text-center text-gray-400">Sin datos para este filtro</td></tr>';
@@ -527,7 +530,7 @@ function actualizar() {
         <td class="px-2 py-1 text-right">${fmtOrDash(f.a)}</td>
         <td class="px-2 py-1 text-right ${f.diff === null ? '' : (f.diff>=0?'text-green-600':'text-red-600')}">${fmtOrDash(f.diff)}</td>
         <td class="px-2 py-1 text-right">${fmtOrDash(f.planActualDia)}</td>
-        <td class="px-2 py-1 text-right ${logroClase(f.pctPlan)}">${fmtPctPlain(f.pctPlan)}</td>
+        <td class="px-2 py-1 text-right ${cumpleClase(f.pctPlan)}">${cumpleTexto(f.pctPlan)}</td>
         <td class="px-2 py-1 text-right">${fmt(f.planExt)}</td>
         <td class="px-2 py-1 text-right ${logroClase(f.pctExt)}">${fmtPctPlain(f.pctExt)}</td>
       </tr>`).join('');
