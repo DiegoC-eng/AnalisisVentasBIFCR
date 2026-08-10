@@ -112,7 +112,7 @@
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="planActualDia">Plan Actual US$<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="pctPlan">Cumple Plan<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="planExt">Plan Extendido US$<span class="sort-arrow"></span></th>
-          <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="pctExt">% Logro Extendido<span class="sort-arrow"></span></th>
+          <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="pctExt">Cumple Plan Extendido<span class="sort-arrow"></span></th>
         </tr>
       </thead>
       <tbody id="tablaDiaria"></tbody>
@@ -154,7 +154,7 @@
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="planActual">Plan Actual Agosto US$<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="pct">Cumple Plan<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="planExt">Plan Extendido US$<span class="sort-arrow"></span></th>
-          <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="pctExt">% Logro Extendido<span class="sort-arrow"></span></th>
+          <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="pctExt">Cumple Plan Extendido<span class="sort-arrow"></span></th>
         </tr>
       </thead>
       <tbody id="tablaTienda"></tbody>
@@ -409,7 +409,7 @@ function renderTablaTienda(filas) {
         <td class="px-2 py-1 text-right">${fmt(t.planActual)}</td>
         <td class="px-2 py-1 text-right ${cumpleClase(t.pct)}">${cumpleTexto(t.pct)}</td>
         <td class="px-2 py-1 text-right">${fmt(t.planExt)}</td>
-        <td class="px-2 py-1 text-right ${logroClase(t.pctExt)}">${fmtPctPlain(t.pctExt)}</td>
+        <td class="px-2 py-1 text-right ${cumpleClase(t.pctExt)}">${cumpleTexto(t.pctExt)}</td>
       </tr>`).join('') || '<tr><td colspan="9" class="px-2 py-4 text-center text-gray-400">Sin datos para este filtro</td></tr>';
   return listaOrdenada;
 }
@@ -532,7 +532,7 @@ function actualizar() {
         <td class="px-2 py-1 text-right">${fmtOrDash(f.planActualDia)}</td>
         <td class="px-2 py-1 text-right ${cumpleClase(f.pctPlan)}">${cumpleTexto(f.pctPlan)}</td>
         <td class="px-2 py-1 text-right">${fmt(f.planExt)}</td>
-        <td class="px-2 py-1 text-right ${logroClase(f.pctExt)}">${fmtPctPlain(f.pctExt)}</td>
+        <td class="px-2 py-1 text-right ${cumpleClase(f.pctExt)}">${cumpleTexto(f.pctExt)}</td>
       </tr>`).join('');
 }
 
