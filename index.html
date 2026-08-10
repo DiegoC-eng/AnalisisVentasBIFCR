@@ -84,9 +84,8 @@
       <p class="text-xs font-semibold" id="kpiPlanLogro">% Logro: -</p>
     </div>
     <div class="bg-white rounded-lg shadow p-4 border-l-4 border-green-500">
-      <p class="text-xs text-gray-500 uppercase">Tiendas que cumplen Plan</p>
+      <p class="text-xs text-gray-500 uppercase">Cumplen Plan +$50 Diario</p>
       <p class="text-2xl font-bold" id="kpiCumplenPlan">-</p>
-      <p class="text-xs text-gray-500" id="kpiCumplenExtendido">Cumplen Plan Extendido: -</p>
     </div>
   </section>
 
@@ -466,10 +465,8 @@ function actualizar() {
   $kpiPlanLogro.textContent = '% Logro: ' + fmtPctPlain(pctPlanTotal);
   $kpiPlanLogro.className = 'text-xs font-semibold ' + logroClase(pctPlanTotal);
 
-  const cumplenPlan = listaTiendas.filter(t => t.pct >= 100).length;
   const cumplenExtendido = listaTiendas.filter(t => t.pctExt >= 100).length;
-  document.getElementById('kpiCumplenPlan').textContent = cumplenPlan + ' de ' + listaTiendas.length;
-  document.getElementById('kpiCumplenExtendido').textContent = 'Cumplen Plan Extendido: ' + cumplenExtendido + ' de ' + listaTiendas.length;
+  document.getElementById('kpiCumplenPlan').textContent = cumplenExtendido + ' de ' + listaTiendas.length;
 
   // Detalle diario / grafica: si la vista es "Todos" se muestran los 31 dias de Julio completos (venta
   // real), aunque Agosto solo tiene datos hasta el dia de corte (DIAS_AGO_DISPONIBLES) - los dias sin
