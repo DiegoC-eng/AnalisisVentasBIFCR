@@ -138,7 +138,7 @@
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="diferencia">Diferencia US$<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="planActual">Plan Actual Agosto US$<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="pctPlan">% Logro Plan<span class="sort-arrow"></span></th>
-          <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="cumplenPlan">Tiendas Cumplen Plan<span class="sort-arrow"></span></th>
+          <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="cumplenPlanExt">Tiendas Cumplen Plan Extendido<span class="sort-arrow"></span></th>
           <th class="px-2 py-1.5 text-right cursor-pointer select-none hover:bg-green-800" data-key="planExt">Plan Extendido US$<br><span class="font-normal text-xs" id="planExtSpanGerente">(+$50/tienda/dia)</span><span class="sort-arrow"></span></th>
         </tr>
       </thead>
@@ -359,14 +359,16 @@ function renderTablaGerente(filas) {
   const grupos = new Map();
   for (const r of filas) {
     const m = metricasFila(r);
-    const g = grupos.get(r.sr) || { sr: r.sr, tiendas: 0, ventaJulio: 0, ventaAgosto: 0, planActual: 0, proxyCount: 0, cumplenPlan: 0 };
+    const g = grupos.get(r.sr) || { sr: r.sr, tiendas: 0, ventaJulio: 0, ventaAgosto: 0, planActual: 0, proxyCount: 0, cumplenPlanExt: 0 };
     g.tiendas += 1;
     g.ventaJulio += m.ventaJulio;
     g.ventaAgosto += m.ventaAgosto;
     g.planActual += m.planActual;
     if (m.esProxy) g.proxyCount += 1;
-    const pctFila = logroPct(m.ventaAgosto, m.planActual);
-    if (pctFila !== null && pctFila >= 100) g.cumplenPlan += 1;
+    const diferenciaFila = m.ventaAgosto - m.ventaJulio;
+    const planExtFila = PLAN_EXTRA_DIARIO * ventana;
+    const pctExtFila = logroPct(diferenciaFila, planExtFila);
+    if (pctExtFila !== null && pctExtFila >= 100) g.cumplenPlanExt += 1;
     grupos.set(r.sr, g);
   }
   const lista = [...grupos.values()];
@@ -386,7 +388,7 @@ function renderTablaGerente(filas) {
         <td class="px-2 py-1 text-right ${g.diferencia>=0?'text-green-600':'text-red-600'}">${fmt(g.diferencia)}</td>
         <td class="px-2 py-1 text-right">${fmt(g.planActual)}</td>
         <td class="px-2 py-1 text-right ${logroClase(g.pctPlan)}">${fmtPctPlain(g.pctPlan)}</td>
-        <td class="px-2 py-1 text-right">${g.cumplenPlan} de ${g.tiendas}</td>
+        <td class="px-2 py-1 text-right">${g.cumplenPlanExt} de ${g.tiendas}</td>
         <td class="px-2 py-1 text-right">${fmt(g.planExt)}</td>
       </tr>`).join('') || '<tr><td colspan="9" class="px-2 py-4 text-center text-gray-400">Sin datos para este filtro</td></tr>';
   return lista;
